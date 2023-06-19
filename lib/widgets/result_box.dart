@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quizapp/constrain.dart';
 
@@ -18,43 +17,43 @@ class ResultBox extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'Result',
               style: TextStyle(color: neutral, fontSize: 22.0),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             CircleAvatar(
               radius: 60.0,
-              child: Text(
-                '$result/$quesLength',
-                style: TextStyle(
-                    color: neutral,
-                    fontSize: 26.0,
-                    fontWeight: FontWeight.w600),
-              ),
               backgroundColor: result == quesLength / 2
                   ? Colors.yellow
                   : result < quesLength / 2
                       ? inCorrect
                       : correct,
+              child: Text(
+                '$result/$quesLength',
+                style: const TextStyle(
+                    color: neutral,
+                    fontSize: 26.0,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
-              '${result == quesLength / 2 ? 'Almost There' : result < quesLength / 2 ? 'Try Again?' : 'Great'}',
-              style: TextStyle(color: neutral, fontSize: 22.0),
+              result == quesLength / 2 ? 'Almost There' : result < quesLength / 2 ? 'Try Again?' : 'Great',
+              style: const TextStyle(color: neutral, fontSize: 22.0),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
-              'Your progress: ${(result * 100 / quesLength).toInt()}%',
-              style: TextStyle(color: neutral, fontSize: 22.0),
+              'Your progress: ${result * 100 ~/ quesLength}%',
+              style: const TextStyle(color: neutral, fontSize: 22.0),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             ElevatedButton(
@@ -62,7 +61,7 @@ class ResultBox extends StatelessWidget {
                 backgroundColor: background,
               ),
               onPressed: onPressedStartOver,
-              child: Text(
+              child: const Text(
                 'Start Over',
                 style: TextStyle(color: neutral, fontSize: 22.0),
               ),

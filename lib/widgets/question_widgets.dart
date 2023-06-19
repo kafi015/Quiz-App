@@ -20,7 +20,7 @@ class QuestinWidget extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         'Question ${indexAction + 1}/$totalQuestion: $question',
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 24.0,
           color: neutral,
         ),

@@ -25,7 +25,6 @@ class DatabaseConnection {
         newQuestions.add(newQuestion);
       });
 
-      print(newQuestions);
       return newQuestions;
     });
 

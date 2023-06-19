@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Scaffold(
                 backgroundColor: background,
                 appBar: AppBar(
-                  title: Text('Quiz App'),
+                  title: const Text('Quiz App'),
                   shadowColor: Colors.transparent,
                   backgroundColor: background,
                   actions: [
@@ -137,14 +137,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
                         'Score $score',
-                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
                 ),
                 body: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
                       QuestinWidget(
@@ -152,10 +152,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         indexAction: index,
                         totalQuestion: extractedData.length,
                       ),
-                      Divider(
+                      const Divider(
                         color: neutral,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 25.0,
                       ),
                       for (int i = 0; i < extractedData[index].options.length; i++)
@@ -178,8 +178,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 floatingActionButton: GestureDetector(
                   onTap: ()=>nextQuestion(extractedData.length),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: NextButton(
                     ),
                   ),
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
           {
             return const Center(child: CircularProgressIndicator(),);
           }
-        return Center(child: Text('No Data'),);
+        return const Center(child: Text('No Data'),);
       },
 
     );

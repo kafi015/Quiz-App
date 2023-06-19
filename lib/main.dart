@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:quizapp/Models/database_connection.dart';
-import 'package:quizapp/Models/question_model.dart';
 import 'package:quizapp/screens/home_screens.dart';
 
 void main()
 {
   
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +15,7 @@ static GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
     return MaterialApp(
       key: globalKey,
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
