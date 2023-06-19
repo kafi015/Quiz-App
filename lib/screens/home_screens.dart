@@ -7,6 +7,7 @@ import 'package:quizapp/widgets/question_widgets.dart';
 import 'package:quizapp/widgets/result_box.dart';
 import 'package:quizapp/widgets/snakbar_message.dart';
 
+import '../Models/database_connection.dart';
 import '../Models/question_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,34 +18,54 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Question> _questions = [
-    Question(
-        id: '10',
-        title: 'What is 2 + 2 ?',
-        options: {'5': false, '4': true, '20': false}),
-    Question(
-        id: '10',
-        title: 'What is 8 + 2 ?',
-        options: {'10': true, '30': false, '20': false}),
-    Question(
-        id: '10',
-        title: 'What is 2 + 1 ?',
-        options: {'5': false, '30': false, '3': true}),
-  ];
+  // List<Question> _questions = [
+  //   Question(
+  //       id: '10',
+  //       title: 'What is 2 + 2 ?',
+  //       options: {'5': false, '4': true, '20': false}),
+  //   Question(
+  //       id: '10',
+  //       title: 'What is 8 + 2 ?',
+  //       options: {'10': true, '30': false, '20': false}),
+  //   Question(
+  //       id: '10',
+  //       title: 'What is 2 + 1 ?',
+  //       options: {'5': false, '30': false, '3': true}),
+  // ];
+  var db = DatabaseConnection();
+  // db.addQuestion(Question(id: '20', title: 'What is 20 * 20?', options: {
+  //   '200' : false,
+  //   '300' : false,
+  //   '400' : true,
+  // }));
+
+  late Future _questions;
+
+  Future<List<Question>> getQuestions()
+  {
+    return db.fetchQuestion();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _questions = getQuestions();
+  }
 
   int index = 0;
   int score = 0;
   bool isPressed = false;
   bool isAlreadySelected = false;
 
-  void nextQuestion() {
-    if (index == _questions.length - 1) {
+  void nextQuestion(int questionLength) {
+    if (index == questionLength - 1) {
       showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) => ResultBox(
                 result: score,
-                quesLength: _questions.length,
+                quesLength: questionLength,
             onPressedStartOver:(){
               startOver();
             },
@@ -94,63 +115,87 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: background,
-      appBar: AppBar(
-        title: Text('Quiz App'),
-        shadowColor: Colors.transparent,
-        backgroundColor: background,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Text(
-              'Score $score',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-      body: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            QuestinWidget(
-              question: _questions[index].title,
-              indexAction: index,
-              totalQuestion: _questions.length,
-            ),
-            Divider(
-              color: neutral,
-            ),
-            SizedBox(
-              height: 25.0,
-            ),
-            for (int i = 0; i < _questions[index].options.length; i++)
-              GestureDetector(
-                onTap: () {
-                  checkAnswerAndUpdate(
-                      _questions[index].options.values.toList()[i]);
-                },
-                child: OptionCard(
-                  option: _questions[index].options.keys.toList()[i],
-                  color: isPressed
-                      ? _questions[index].options.values.toList()[i] == true
-                          ? correct
-                          : inCorrect
-                      : neutral,
+    return FutureBuilder(
+      future: _questions as Future<List<Question>>,
+      builder: (context, snapshot){
+        if(snapshot.connectionState == ConnectionState.done)
+          {
+            if(snapshot.hasError)
+              {
+                return Center(child: Text('${snapshot.error}'),);
+              }
+            else if(snapshot.hasData){
+              var extractedData = snapshot.data as List<Question>;
+              return Scaffold(
+                backgroundColor: background,
+                appBar: AppBar(
+                  title: Text('Quiz App'),
+                  shadowColor: Colors.transparent,
+                  backgroundColor: background,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text(
+                        'Score $score',
+                        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-          ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: NextButton(
-          onTap: nextQuestion,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+                body: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      QuestinWidget(
+                        question: extractedData[index].title,
+                        indexAction: index,
+                        totalQuestion: extractedData.length,
+                      ),
+                      Divider(
+                        color: neutral,
+                      ),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      for (int i = 0; i < extractedData[index].options.length; i++)
+                        GestureDetector(
+                          onTap: () {
+                            checkAnswerAndUpdate(
+                                extractedData[index].options.values.toList()[i]);
+                          },
+                          child: OptionCard(
+                            option: extractedData[index].options.keys.toList()[i],
+                            color: isPressed
+                                ? extractedData[index].options.values.toList()[i] == true
+                                ? correct
+                                : inCorrect
+                                : neutral,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                floatingActionButton: GestureDetector(
+                  onTap: ()=>nextQuestion(extractedData.length),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: NextButton(
+                    ),
+                  ),
+                ),
+                floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              );
+            }
+
+          }
+        else
+          {
+            return const Center(child: CircularProgressIndicator(),);
+          }
+        return Center(child: Text('No Data'),);
+      },
+
     );
   }
 }
